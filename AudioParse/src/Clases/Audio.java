@@ -17,6 +17,13 @@ public class Audio {
 	private String name;
 	private Texto txt;
 
+	public Audio(String name,String path) {
+		super();
+		this.path = path;
+		this.txt = null;
+		this.name = name;
+	}
+	/*
 	public Audio(String name,String path){
 		super();
 		
@@ -28,7 +35,7 @@ public class Audio {
 		
 		File dir = new File(path);
 		String[] archivos = dir.list();
-		System.out.println(pathText);
+		
 		for(int i = 0;i<archivos.length;i++) {
 			
 			System.out.println("Name file:" + archivos[i]);
@@ -37,8 +44,15 @@ public class Audio {
 				System.out.println(true);
 				try {
 					String[] cmd = { "sh", pathText, name};
-					Runtime.getRuntime().exec(cmd);
-					this.txt = new Texto(this.getTxt(name,"/home/leandro/Desktop/Java/AudioParse/"));
+					Process p = Runtime.getRuntime().exec(cmd);
+					try {
+						p.waitFor();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						System.out.println("Processes error");
+					}
+					
+					this.txt = new Texto(this.getTxt(name,dir));
 					return;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -53,9 +67,10 @@ public class Audio {
 		
 		
 	}
-
-	private String getTxt(String nameFile,String path) {
-		File dir = new File(path);
+	 */
+	private String getTxt(File dir) {
+		String nameFile = this.name;
+		System.out.println("Getting new text...");
 		File[] archivos = dir.listFiles();
 		for(int i=0;i<archivos.length;i++) {
 			System.out.println(archivos[i]);
@@ -86,7 +101,27 @@ public class Audio {
 		this.path = path;
 	}
 	
-	public String Texto() {
+	public String Texto(File dir) {
+		if(this.txt == null) {
+			String pathText = "/home/leandro/Desktop/Java/AudioParse/src/Clases/scriptPy.sh";
+			String command[]= {"sh",pathText,this.path,this.name};
+			try {
+				Process p = Runtime.getRuntime().exec(command);
+				try {
+					p.waitFor();
+					//ends with name + .txt
+					this.txt = new Texto(this.getTxt(dir));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 		String AudioText = this.txt.getContenido();
 		return AudioText;
 	}
