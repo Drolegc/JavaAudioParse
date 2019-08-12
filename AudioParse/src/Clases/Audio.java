@@ -22,58 +22,17 @@ public class Audio {
 		this.path = path;
 		this.txt = null;
 		this.name = name;
+		System.out.println("Adding new audio: "+this.name+" --- "+this.path);
 	}
-	/*
-	public Audio(String name,String path){
-		super();
-		
-		this.path = path;
-		this.name = name;
-		
-		String pathText = "/home/leandro/Desktop/Java/AudioParse/src/Clases/scriptPy.sh";
-		
-		
-		File dir = new File(path);
-		String[] archivos = dir.list();
-		
-		for(int i = 0;i<archivos.length;i++) {
-			
-			System.out.println("Name file:" + archivos[i]);
-			if(archivos[i].endsWith(".mp3")) {
-				//Ejecutar el archivo parseAudio.py
-				System.out.println(true);
-				try {
-					String[] cmd = { "sh", pathText, name};
-					Process p = Runtime.getRuntime().exec(cmd);
-					try {
-						p.waitFor();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						System.out.println("Processes error");
-					}
-					
-					this.txt = new Texto(this.getTxt(name,dir));
-					return;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					System.out.println("HEY Buddy ! U r Doing Something Wrong "); 
-					e.printStackTrace();
-				}
-				
-			}
-		}
-		
-		this.txt = new Texto("VACIO");
-		
-		
-	}
-	 */
+	
 	private String getTxt(File dir) {
+		
 		String nameFile = this.name;
 		System.out.println("Getting new text...");
 		File[] archivos = dir.listFiles();
+		
 		for(int i=0;i<archivos.length;i++) {
-			System.out.println(archivos[i]);
+			System.out.println(archivos[i].getName());
 			if(archivos[i].getName().endsWith(nameFile+"AUDIO.txt")) {
 				Scanner sc;
 				String info = "";
@@ -102,14 +61,16 @@ public class Audio {
 	}
 	
 	public String Texto(File dir) {
+		
+		System.out.println("Resolving audio text...");
 		if(this.txt == null) {
-			String pathText = "/home/leandro/Desktop/Java/AudioParse/src/Clases/scriptPy.sh";
-			String command[]= {"sh",pathText,this.path,this.name};
+			String pathScript = "/home/leandro/Desktop/Java/AudioParse/src/Clases/scriptPy.sh";
+			String command[]= {"sh",pathScript,this.path,this.name};
 			try {
 				Process p = Runtime.getRuntime().exec(command);
 				try {
 					p.waitFor();
-					//ends with name + .txt
+					
 					this.txt = new Texto(this.getTxt(dir));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -122,6 +83,7 @@ public class Audio {
 			
 		}
 		
+		System.out.println("Success!");
 		String AudioText = this.txt.getContenido();
 		return AudioText;
 	}

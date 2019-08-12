@@ -5,59 +5,65 @@ import java.util.ArrayList;
 
 import Clases.Audio;
 
-public class Controller {
+public class Controller{
 
-	private ArrayList<Audio> colAudio = new ArrayList();
+	private ArrayList<Audio> colAudio = new ArrayList<Audio>();
 	private File dir;
+	private UI interfaceMain;
 	
-	
-	public Controller() {
+	public Controller(UI ui) {
+		//ParseDir is a directory where the .wav files needs to bee
 		this.dir = new File("/home/leandro/Desktop/ParseDir");
+		this.interfaceMain = ui;
+
 	}
 	
-	public void lookDirectory() {
+	public ArrayList<String> lookDirectory() {
 		String archivos[] = dir.list();
+		ArrayList<String> filesToReturn = new ArrayList<String>();
+		
 		int lengthFiles = archivos.length;
 		System.out.println(":: .WAV FILES ::");
 		
 		for(int i=0;i<lengthFiles;i++) {
 			if(archivos[i].endsWith(".wav")) {
-				System.out.println(" - "+archivos[i]);
+				filesToReturn.add(this.dir+"/"+archivos[i]);
 			}
 		}
+		return filesToReturn;
 	}
 	
-	public void addAudio(String name) {
-		//Check if the file exists
-		File archivos[] = this.dir.listFiles();
+	public String readAudio(String path) {
 		
-		for(File f:archivos) {
-			if(f.getName().endsWith(name + ".wav")) {
-				Audio audio = new Audio(name,f.getName());
-				this.colAudio.add(audio);
-				System.out.println("Audio ready");
-				return;
+		File files[] = dir.listFiles();
+		String txt = new String("Nathing");
+		
+		for(File f:files) {
+			if(f.getAbsolutePath().equals(path)) {
+				System.out.println(f.getName());
+				
+				String audioName[] = f.getName().split(".",1);
+				System.out.println(audioName[0]);
+				
+				//Audio audio = new Audio(audioName[0],path);
+				Audio audio = theresAudio(audioName[0],path);
+				txt = audio.Texto(this.dir);
+				colAudio.add(audio);
 			}
 		}
-		
-		System.out.println("File doesnt exists");
+		return txt;
 	}
 	
-	public void readAudio(String name) {
-		for(int i=0;i<colAudio.size();i++) {
-			Audio a = colAudio.get(i);
+	private Audio theresAudio(String name,String path) {
+		for(Audio a:colAudio) {
 			if(a.getName().equals(name)) {
-				System.out.println(a.getName() + " - " + a.Texto(this.dir));
+				System.out.println("There is!");
+				return a;
 			}
 		}
+		
+		return new Audio(name,path);
 	}
-	
-	public void listAudios() {
-		for(String f: this.dir.list()) {
-			if(f.endsWith(".wav")) {
-				System.out.println("-" + f);
-			}
-		}
-	}
+
 
 }
