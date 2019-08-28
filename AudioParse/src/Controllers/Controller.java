@@ -1,21 +1,28 @@
-package Main;
+package Controllers;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import Clases.Audio;
 
-public class Controller{
+public class Controller implements ISistema{
 
 	private ArrayList<Audio> colAudio = new ArrayList<Audio>();
 	private File dir;
-	private UI interfaceMain;
+	private static Controller instance = null;
 	
-	public Controller(UI ui) {
+	private Controller() {
 		//ParseDir is a directory where the .wav files needs to bee
 		this.dir = new File("/home/leandro/Desktop/ParseDir");
-		this.interfaceMain = ui;
+		this.instance = this;
 
+	}
+	
+	public static Controller getInstance() {
+		if(instance == null) {
+			return new Controller();
+		}
+		return instance;
 	}
 	
 	public ArrayList<String> lookDirectory() {
@@ -27,7 +34,8 @@ public class Controller{
 		
 		for(int i=0;i<lengthFiles;i++) {
 			if(archivos[i].endsWith(".wav")) {
-				filesToReturn.add(this.dir+"/"+archivos[i]);
+				System.out.println("Some file");
+				filesToReturn.add(archivos[i]);
 			}
 		}
 		return filesToReturn;
@@ -35,6 +43,7 @@ public class Controller{
 	
 	public String readAudio(String path) {
 		
+		path = this.dir+"/"+path;
 		File files[] = dir.listFiles();
 		String txt = new String("Nathing");
 		
@@ -63,6 +72,19 @@ public class Controller{
 		}
 		
 		return new Audio(name,path);
+	}
+
+	@Override
+	public void addAudio(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void listAudios() {
+		// TODO Auto-generated method stub
+		
 	}
 
 
